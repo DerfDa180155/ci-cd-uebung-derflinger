@@ -21,6 +21,11 @@ class TextUtilsTest {
     }
 
     @Test
+    void safeParseInt_null_returnsZero() {
+        assertEquals(0, TextUtils.safeParseInt(null));
+    }
+
+    @Test
     void isPalindrome_caseInsensitive_expectedTrue() {
         assertTrue(TextUtils.isPalindrome("Anna"));
     }
