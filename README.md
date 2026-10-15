@@ -3,6 +3,11 @@
 Dieses Repository ist der Startpunkt für **Übung 1** und wird in **allen folgenden Übungen** weiterverwendet
 (CI mit GitHub Actions → SonarCloud → Docker → Security-Scan).
 
+## Übung 1
+
+- Autor: David Derflinger
+- Besonderheit: Ich nutze Git bereits seit mehreren Jahren und habe damit sehr gute Erfahrungen gemacht. Daher bin ich mit den wichtigsten Funktionen und Arbeitsabläufen bereits gut vertraut.
+
 ---
 
 ## Voraussetzungen (VS Code)
