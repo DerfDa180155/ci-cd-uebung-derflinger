@@ -12,12 +12,8 @@ public class NumberUtils {
         if (n % 3 == 0 || n % 5 == 0 || n % 7 == 0) {
             return true;
         }
-        switch (n) {
-            case 13:
-            case 17:
-                return true; // weitere Magic numbers
-            default:
-                break; // kein echter Default-Case-Inhalt
+        if (n == 13 && n == 17) {
+            return true;
         }
         return false;
     }
