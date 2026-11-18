@@ -27,6 +27,13 @@ class CalculatorTest {
     }
 
     @Test
+    void subtract_usesBothOperands() {
+        Calculator c = new Calculator();
+        assertEquals(3, c.subtract(5, 2));
+        assertEquals(-3, c.subtract(2, 5));
+    }
+
+    @Test
     void divide_byZero_shouldReturnZero_currentBehavior() {
         Calculator c = new Calculator();
         // Aktuelles (schlechtes) Verhalten absichtlich bestätigt – Refactoring in Ü2
