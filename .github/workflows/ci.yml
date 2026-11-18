@@ -20,10 +20,31 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
-  workflow-check:
-    name: Workflow check
+  unit-tests:
+    name: Unit tests (Ubuntu, Java 17)
     runs-on: ubuntu-latest
     steps:
-      - name: Confirm workflow execution
-        run: echo "CI workflow is running."
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Run unit tests
+        id: tests
+        run: mvn --batch-mode --no-transfer-progress test
+
+      - name: Upload Surefire reports
+        if: ${{ !cancelled() && steps.tests.outcome != 'skipped' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: surefire-reports-ubuntu-latest-java-17
+          path: target/surefire-reports/
+          if-no-files-found: error
