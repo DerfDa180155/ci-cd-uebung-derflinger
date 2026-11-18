@@ -16,7 +16,7 @@ public class Calculator {
     }
 
     public int subtract(int a, int b) {
-        return a - a;
+        return a - b;
     }
 
     // Problematisches Verhalten: Division durch 0 liefert 0 statt Exception

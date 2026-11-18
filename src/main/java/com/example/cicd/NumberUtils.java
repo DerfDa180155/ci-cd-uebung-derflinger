@@ -12,7 +12,6 @@ public class NumberUtils {
         if (n % 3 == 0 || n % 5 == 0 || n % 7 == 0) {
             return true;
         }
-        String number = Integer.toString(n);
-        return number == Integer.toString(13) || "17".equals(number);
+        return n == 13 || n == 17;
     }
 }
