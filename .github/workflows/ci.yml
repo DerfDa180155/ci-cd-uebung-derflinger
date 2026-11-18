@@ -56,3 +56,16 @@ jobs:
           name: surefire-reports-${{ matrix.os }}-java-${{ matrix.java }}
           path: target/surefire-reports/
           if-no-files-found: error
+
+      # Maven stops before the lifecycle-bound report if a unit test fails.
+      - name: Generate JaCoCo report after failed tests
+        if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' && matrix.java == '17' && steps.tests.outcome == 'failure' }}
+        run: mvn --batch-mode --no-transfer-progress jacoco:report
+
+      - name: Upload JaCoCo coverage XML
+        if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' && matrix.java == '17' && steps.tests.outcome != 'skipped' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: jacoco-xml
+          path: target/site/jacoco/jacoco.xml
+          if-no-files-found: error
