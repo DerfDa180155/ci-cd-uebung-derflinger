@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'src/**'
-      - 'pom.xml'
-      - '.github/workflows/ci.yml'
   pull_request:
     branches:
       - main
@@ -17,7 +13,7 @@ on:
       - '.github/workflows/ci.yml'
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: true
 
 permissions:
@@ -38,6 +34,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Set up Java ${{ matrix.java }}
         uses: actions/setup-java@v6
@@ -63,9 +61,19 @@ jobs:
         run: mvn --batch-mode --no-transfer-progress jacoco:report
 
       - name: Upload JaCoCo coverage XML
+        id: coverage
         if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' && matrix.java == '17' && steps.tests.outcome != 'skipped' }}
         uses: actions/upload-artifact@v7
         with:
           name: jacoco-xml
           path: target/site/jacoco/jacoco.xml
           if-no-files-found: error
+
+      - name: Analyze with SonarQube Cloud
+        if: ${{ !cancelled() && github.event_name == 'push' && steps.coverage.outcome == 'success' }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: >-
+          mvn --batch-mode --no-transfer-progress
+          org.sonarsource.scanner.maven:sonar-maven-plugin:5.9.0.7382:sonar
+          -Dsonar.java.jdkHome="$JAVA_HOME"
