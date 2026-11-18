@@ -25,17 +25,25 @@ permissions:
 
 jobs:
   unit-tests:
-    name: Unit tests (Ubuntu, Java 17)
-    runs-on: ubuntu-latest
+    name: Unit tests (${{ matrix.os }}, Java ${{ matrix.java }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        java: ['17', '21']
+        exclude:
+          - os: windows-latest
+            java: '17'
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
 
-      - name: Set up Java 17
+      - name: Set up Java ${{ matrix.java }}
         uses: actions/setup-java@v6
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: ${{ matrix.java }}
 
       - name: Run unit tests
         id: tests
@@ -45,6 +53,6 @@ jobs:
         if: ${{ !cancelled() && steps.tests.outcome != 'skipped' }}
         uses: actions/upload-artifact@v7
         with:
-          name: surefire-reports-ubuntu-latest-java-17
+          name: surefire-reports-${{ matrix.os }}-java-${{ matrix.java }}
           path: target/surefire-reports/
           if-no-files-found: error
